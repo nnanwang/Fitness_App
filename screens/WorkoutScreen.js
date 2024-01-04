@@ -8,9 +8,65 @@ import { FitnessItems } from '../Context';
 
 // Declaring the WorkoutScreen functional component
 const WorkoutScreen = () => {
-    <View>
-    <Text>Workout</Text>
-</View>
+    const route = useRoute();
+    const navigation = useNavigation();
+
+    const { completed, setCompleted } = useContext(FitnessItems);
+    
+    return (
+        <>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ backgroundColor: "white", marginTop: 20 }}
+      >
+        {/* Image at the top of the screen */}
+        <Image
+          style={{ width: "100%", height: 200, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, marginBottom: 20 }}
+          source={{ uri: route.params.image }}
+        />
+
+                {/* Back arrow icon to navigate back */}
+        <Ionicons
+          onPress={() => navigation.goBack()}
+          style={{ position: 'absolute', top: 30, left: 20, backgroundColor: "white", borderRadius: 8, padding: 3 }}
+          name="arrow-back-outline"
+          size={24}
+          color="black"
+        />
+
+                {/* Mapping through exercises to create a list */}
+        {
+          route.params.exercises.map((item, index) => (
+            <TouchableOpacity style={{ marginVertical: 12, marginHorizontal: 18, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }} key={index}>
+              <View style={{ flexDirection: "row", alignItems: "center", }}>
+                                {/* Exercise details */}
+
+                <Image style={{ width: 90, height: 90, }} source={{ uri: item.image }} />
+
+                <View style={{ marginLeft: 10 }}>
+                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>{item.name}</Text>
+                  <Text style={{ marginTop: 4, fontSize: 16, color: "gray" }}>{item.sets}</Text>
+                </View>
+              </View>
+
+              {/* Check icon to show if exercise is completed */}
+              {
+                completed.includes(item?.name) ? (<AntDesign name="checkcircle" size={24} color="#198f51" />) : null
+              }
+            </TouchableOpacity>
+          ))
+        }
+      </ScrollView>
+
+            {/* Start button */}
+      <TouchableOpacity onPress={() => {
+        navigation.navigate("Fit", { exercises: route.params.exercises }) 
+        setCompleted([]);
+      }} style={{ backgroundColor: "#198f51", padding: 12, marginHorizontal: 15, marginVertical: 20, borderRadius: 50}}>
+        <Text style={{ textAlign: "center", color: "#fff", fontWeight: "bold", fontSize: 20 }}><MaterialCommunityIcons name="whistle" size={24} color="white" /> START</Text>
+      </TouchableOpacity>
+    </>
+  )
 }
 
 export default WorkoutScreen
